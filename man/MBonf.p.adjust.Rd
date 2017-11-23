@@ -28,6 +28,15 @@ The attainable p-value refers to the element of domain set of p-value for the co
 p <- c(pbinom(1,8,0.5),pbinom(1,5,0.75),pbinom(1,6,0.6))
 p.set <-list(pbinom(0:8,8,0.5),pbinom(0:5,5,0.75),pbinom(0:6,6,0.6))
 MBonf.p.adjust(p,p.set)
+## Compare with the traditional Bonferroni adjustment
+p.adjust(p,method = "bonferroni")
+## Compare with the Tarone adjustment
+Tarone.p.adjust(p,p.set)
+}
+\references{
+Zhu, Y., & Guo, W. (2017).
+Familywise error rate controlling procedures for discrete data
+\emph{arXiv preprint} arXiv:1711.08147.
 }
 \seealso{
 \code{\link{Tarone.p.adjust}},  \code{\link{MixBonf.p.adjust}},  \code{\link[stats]{p.adjust}}.

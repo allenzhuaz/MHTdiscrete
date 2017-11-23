@@ -9,7 +9,7 @@ getPval(raw.data, test.type, alternative)
 \arguments{
 \item{raw.data}{original data set with count number for treatment group and study group. The data set type could be \code{\link[base]{matrix}} or \code{\link[base]{data.frame}}.}
 
-\item{test.type}{there are two discrete test available now, must be one of \code{"FET"} for Fisher's Exact Test and \code{"EBT"} for Exact Binomial Test.}
+\item{test.type}{there are two discrete test available now, must be one of \code{"FET"} for Fisher's Exact Test and \code{"BET"} for Binomial Exact Test.}
 
 \item{alternative}{indicates the alternative hypothesis and must be one of \code{"two.sided"}, \code{"greater"} or \code{"less"}.}
 }
@@ -32,6 +32,10 @@ p <- getPval(raw.data=df, test.type = "FET",alternative = "two.sided")[[1]]; p
 p.set <- getPval(raw.data=df, test.type = "FET",alternative = "two.sided")[[2]]; p.set
 }
 \references{
+Zhu, Y., & Guo, W. (2017).
+Familywise error rate controlling procedures for discrete data
+\emph{arXiv preprint} arXiv:1711.08147.
+
 Clopper, C. J. & Pearson, E. S. (1934).
 The use of confidence or fiducial limits illustrated in the case of the binomial.
 \emph{Biometrika}, \strong{26}: 404-413.

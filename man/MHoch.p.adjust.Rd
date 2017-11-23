@@ -25,9 +25,17 @@ The function for calculating the adjusted p-values based on original available p
 p <- c(pbinom(1,8,0.5),pbinom(1,5,0.75),pbinom(1,6,0.6))
 p.set <-list(pbinom(0:8,8,0.5),pbinom(0:5,5,0.75),pbinom(0:6,6,0.6))
 MHoch.p.adjust(p,p.set)
+## Compare with the traditional Hochberg adjustment
+p.adjust(p,method = "hochberg")
+## Compare with the Roth adjustment
+Roth.p.adjust(p,p.set)
 }
 \references{
-Hochberg, Y. (1988).
+Zhu, Y., & Guo, W. (2017).
+Familywise error rate controlling procedures for discrete data
+\emph{arXiv preprint} arXiv:1711.08147.
+
+ Hochberg, Y. (1988).
  A sharper Bonferroni procedure for multiple tests of significance.
  \emph{ Biometrika}, \strong{75}: 800-803.
 }

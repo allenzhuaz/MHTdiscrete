@@ -10,7 +10,7 @@ The MHTdiscrete package provides two categories of important functions for discr
 }
 \section{FWER controlling procedures}{
 
-       Single-step: MBonf.p.adjust, Tarone.p.adjust.
+       Single-step: MBonf.p.adjust, MixBonf.p.adjust, Tarone.p.adjust.
 
        Step-down: MHolm.p.adjust, TH.p.adjust.
 
