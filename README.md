@@ -1,6 +1,6 @@
-## MHTdiscrete
+# MHTdiscrete
 ================
-# Multiple Hypotheses Testing for Discrete Data
+## Multiple Hypotheses Testing for Discrete Data
 
 This package includes most FWER and FDR controlling procedures for discrete data.
 
@@ -8,7 +8,7 @@ The paper to describe the new stepwise FWER controlling methods for discrete dat
 
 [Zhu, Y., & Guo, W. (2017). Familywise Error Rate Controlling Procedures for Discrete Data. arXiv preprint arXiv:1711.08147.](https://arxiv.org/abs/1711.08147)
 
-## Installation ##
+### Installation
 
 Open R console, install the pacakge directly from [CRAN](https://cran.r-project.org/web/packages/MHTdiscrete/index.html) by typing the code 
 
