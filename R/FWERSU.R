@@ -13,14 +13,21 @@
 #' @seealso \code{\link{Roth.p.adjust}},  \code{\link[stats]{p.adjust}}.
 #' @author Yalin Zhu
 #' @references
+#' Zhu, Y., & Guo, W. (2017).
+#' Familywise error rate controlling procedures for discrete data
+#' \emph{arXiv preprint} arXiv:1711.08147.
+#'
 #'  Hochberg, Y. (1988).
 #'  A sharper Bonferroni procedure for multiple tests of significance.
 #'  \emph{ Biometrika}, \strong{75}: 800-803.
-#'
 #' @examples
 #' p <- c(pbinom(1,8,0.5),pbinom(1,5,0.75),pbinom(1,6,0.6))
 #' p.set <-list(pbinom(0:8,8,0.5),pbinom(0:5,5,0.75),pbinom(0:6,6,0.6))
 #' MHoch.p.adjust(p,p.set)
+#' ## Compare with the traditional Hochberg adjustment
+#' p.adjust(p,method = "hochberg")
+#' ## Compare with the Roth adjustment
+#' Roth.p.adjust(p,p.set)
 #' @export
 
 MHoch.p.adjust <- function(p,p.set, alpha = 0.05, make.decision = FALSE){
@@ -61,7 +68,6 @@ MHoch.p.adjust <- function(p,p.set, alpha = 0.05, make.decision = FALSE){
 #' Hochberg, Y. (1988).
 #'  A sharper Bonferroni procedure for multiple tests of significance.
 #'  \emph{ Biometrika}, \strong{75}: 800-803.
-#'
 #' @examples
 #' p <- c(pbinom(1,8,0.5),pbinom(1,5,0.75),pbinom(1,6,0.6))
 #' p.set <-list(pbinom(0:8,8,0.5),pbinom(0:5,5,0.75),pbinom(0:6,6,0.6))

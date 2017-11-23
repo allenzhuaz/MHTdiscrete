@@ -40,10 +40,18 @@ Sidak.p.adjust <- function(p, alpha = 0.05, make.decision = FALSE){
 #' A numeric vector of the adjusted p-values (of the same length as \code{p}) if  \code{make.decision = FALSE}, or a list including original p-values, adjusted p-values and decision rules if \code{make.decision = TRUE}.
 #' @seealso \code{\link{Tarone.p.adjust}},  \code{\link{MixBonf.p.adjust}},  \code{\link[stats]{p.adjust}}.
 #' @author  Yalin Zhu
+#' @references
+#' Zhu, Y., & Guo, W. (2017).
+#' Familywise error rate controlling procedures for discrete data
+#' \emph{arXiv preprint} arXiv:1711.08147.
 #' @examples
 #' p <- c(pbinom(1,8,0.5),pbinom(1,5,0.75),pbinom(1,6,0.6))
 #' p.set <-list(pbinom(0:8,8,0.5),pbinom(0:5,5,0.75),pbinom(0:6,6,0.6))
 #' MBonf.p.adjust(p,p.set)
+#' ## Compare with the traditional Bonferroni adjustment
+#' p.adjust(p,method = "bonferroni")
+#' ## Compare with the Tarone adjustment
+#' Tarone.p.adjust(p,p.set)
 #' @export
 
 MBonf.p.adjust <- function(p, p.set, alpha = 0.05, make.decision = FALSE){
@@ -78,6 +86,17 @@ MBonf.p.adjust <- function(p, p.set, alpha = 0.05, make.decision = FALSE){
 #' @seealso \code{\link{Tarone.p.adjust}},  \code{\link{MBonf.p.adjust}},  \code{\link[stats]{p.adjust}}.
 #' @note The arguments include three parts, the available p-values need to be reorganized in advance. Gather all available p-values for continuous data as \code{pc}, and all available p-values for discrete data as \code{pd}. The attainable p-value refers to the element of domain set of p-value for the corresponding hypothesis for discrete test statistics, the p-value can only take finite values bewtween 0 and 1, that is, the attainable p-values for discrete case are finite and countable, so we can assign them in a finite list \code{pd.set}. The function returns the  adjusted p-values with the first part for continuous data of the same length as \code{pc}, and second part for discrete data of the same length as \code{pd}
 #' @author  Yalin Zhu
+#' @references
+#' Zhu, Y., & Guo, W. (2017).
+#' Familywise error rate controlling procedures for discrete data
+#' \emph{arXiv preprint} arXiv:1711.08147.
+#'
+#' @examples
+#' pd <- c(pbinom(1,8,0.5),pbinom(1,5,0.75)); pc <- c(0.04, 0.1)
+#' pd.set <-list(pbinom(0:8,8,0.5),pbinom(0:5,5,0.75))
+#' MixBonf.p.adjust(pc,pd,pd.set)
+#' ## Compare with the traditional Bonferroni adjustment
+#' p.adjust(c(pc,pd),method = "bonferroni")
 #' @export
 MixBonf.p.adjust <- function(pc, pd, pd.set, alpha = 0.05, make.decision = FALSE){
   mc <- length(pc); md <- length(pd); m <- mc+md

@@ -2,7 +2,7 @@
 #'
 #' The MHTdiscrete package provides two categories of important functions for discrete data mutliple hypothese testing:
 #' @section FWER controlling procedures:
-#'        Single-step: MBonf.p.adjust, Tarone.p.adjust.
+#'        Single-step: MBonf.p.adjust, MixBonf.p.adjust, Tarone.p.adjust.
 #'
 #'        Step-down: MHolm.p.adjust, TH.p.adjust.
 #'
