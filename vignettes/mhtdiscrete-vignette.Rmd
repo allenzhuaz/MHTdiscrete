@@ -1,0 +1,140 @@
+---
+title: "MHTdiscrete Quick Start Guide"
+author: "Yalin Zhu (yalin.zhu@outlook.com)"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MHTdiscrete Quick Start Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette summarizes the functions in the `MHTdiscrete` package, and provides some examples to illustrates how to use the package.  
+
+First of all, you need to install the R package.
+```{r warning=FALSE, eval=FALSE}
+install.packages("MHTdiscrete")
+```
+then attach it
+```{r}
+library(MHTdiscrete)
+```
+
+The clinical safety example in Zhu and Guo^[Zhu, Y., & Guo, W. (2018). Familywise Error Rate Controlling Procedures for Discrete Data. *arXiv preprint arXiv:1711.08147*.]:
+
+```{r}
+df <-  data.frame(X1=c(4, 2, 2, 13, 6, 8, 4, 0, 1), N1 = rep(148, 9),
+                  X2 = c(0, 0, 1, 3, 2, 1, 2, 2, 2), N2 = rep(132, 9))
+  # obtain the avaiable p-values and attainable p-values using two-sided Fisher's Exact Test
+  
+  # store the avaiable p-values
+ (p <- getPval(raw.data=df, test.type = "FET",alternative = "two.sided")$available.pvalue)
+  # store the attainable p-values
+ (p.set <- getPval(raw.data=df, test.type = "FET",alternative = "two.sided")$attainable.pvalue)
+```
+
+Apply single-step testing procedures:
+
+```{r}
+library()
+data.frame(df, Orig.p = p,
+           Bonf.adjp = p.adjust(p, method = "bonferroni"),
+           Sidak.adjp = Sidak.p.adjust(p),
+           Tarone.adjp = Tarone.p.adjust(p, p.set),
+           MBonf.adjp = MBonf.p.adjust(p, p.set)) %>% 
+  datatable() %>%
+  formatRound(c(5:9), 4) %>%
+  formatStyle(c('Bonf.adjp', 'Sidak.adjp', 'Tarone.adjp', 'MBonf.adjp'),
+              fontWeight = styleInterval(0.1, c('bold', 'normal')), 
+              color = styleInterval(0.1, c('red', 'black')),
+              backgroundColor = styleInterval(0.1, c('pink', '')))
+```
+
+Apply step-down testing procedures:
+
+
+```{r}
+
+data.frame(df, Orig.p = p,
+           Holm.adjp = p.adjust(p, method = "holm"),
+           TH.adjp = TH.p.adjust(p, p.set),
+           MHolm.adjp = MHolm.p.adjust(p, p.set)) %>% 
+  datatable() %>%
+  formatRound(c(5:8), 4) %>%
+  formatStyle(c('Holm.adjp', 'TH.adjp', 'MHolm.adjp'),
+              fontWeight = styleInterval(0.1, c('bold', 'normal')), 
+              color = styleInterval(0.1, c('red', 'black')),
+              backgroundColor = styleInterval(0.1, c('pink', '')))
+```
+
+Apply step-up testing procedures:
+
+
+```{r}
+
+data.frame(df, Orig.p = p,
+           Hochberg.adjp = p.adjust(p, method = "hochberg"),
+           Roth.adjp = Roth.p.adjust(p, p.set),
+           MHoch.adjp = MHoch.p.adjust(p, p.set)) %>% 
+  datatable() %>%
+  formatRound(c(5:8), 4) %>%
+  formatStyle(c('Hochberg.adjp', 'Roth.adjp', 'MHoch.adjp'),
+              fontWeight = styleInterval(0.1, c('bold', 'normal')), 
+              color = styleInterval(0.1, c('red', 'black')),
+              backgroundColor = styleInterval(0.1, c('pink', '')))
+```
+
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

@@ -1,13 +1,12 @@
 Package: MHTdiscrete
 Type: Package
 Title: Multiple Hypotheses Testing for Discrete Data
-Version: 1.0.0
-Suggests: multcomp, FixSeqMTP
+Version: 1.0.1
 Author: Yalin Zhu, Wenge Guo
 Maintainer: Yalin Zhu <yalin.zhu@outlook.com>
 BugReports: https://github.com/allenzhuaz/MHTdiscrete/issues
 URL: https://allen.shinyapps.io/MTPs/
-Description: A comprehensive tool for almost all existing multiple testing
+Description: A comprehensive tool for existing multiple testing
     methods for discrete data. The package also provides some novel multiple testing
     procedures controlling FWER/FDR for discrete data. Given discrete p-values
     and their domains, the [method].p.adjust function returns adjusted p-values,
@@ -16,4 +15,9 @@ Description: A comprehensive tool for almost all existing multiple testing
     for printing decision rules.
 License: GPL (>= 2)
 LazyData: TRUE
-NeedsCompilation: yes
+NeedsCompilation: no
+RoxygenNote: 6.1.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
