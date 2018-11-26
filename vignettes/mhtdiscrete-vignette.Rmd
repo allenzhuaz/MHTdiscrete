@@ -91,6 +91,148 @@ data.frame(df, Orig.p = p,
               backgroundColor = styleInterval(0.1, c('pink', '')))
 ```
 
+## Simulation Studies
+```{r}
+hyperpval <- function(n1,n0,x){
+  x1 <- c(x:0)
+  pval <- 1-phyper(x1-1,n1,n0,x)
+  return(pval)
+}
+### simulation to calculate FWER and Power
+B <- 2000; alpha <- 0.05;
+M <- c(5, 10, 15); pi0 <-c(0.2, 0.4, 0.6, 0.8); 
+N <- 25*c(1:6)
+MBonf.FWER <- numeric(); MBonf.Pow <- numeric()
+Bonf.FWER <- numeric(); Bonf.Pow <- numeric()
+Sidak.FWER <- numeric(); Sidak.Pow <- numeric()
+Tarone.FWER <- numeric(); Tarone.Pow <- numeric()
+MBonf.FWER.pi0 <- MBonf.Pow.pi0 <- Bonf.FWER.pi0 <- Bonf.Pow.pi0 <- Tarone.FWER.pi0 <- Tarone.Pow.pi0 <-Sidak.FWER.pi0 <- Sidak.Pow.pi0 <-numeric()
+
+
+set.seed(1001)
+for(l in 1:length(M)){
+  for(k in 1:length(pi0)){
+for(a in 1:length(N)){
+  h0 <- M[l]*pi0[k]; h1<-M[l]-h0;
+  Pval <- matrix(0,B,M[l]); P.list <- list(); 
+  MBonf.adjp <- matrix(0,B,M[l]); MBonf.R <- matrix(0,B,1); MBonf.V <- matrix(0,B,1)
+  MBonf.total.FWER <- 0; MBonf.total.Pow <- 0
+  Bonf.adjp <- matrix(0,B,M[l]); Bonf.R <- matrix(0,B,1); Bonf.V <- matrix(0,B,1)
+  Bonf.total.FWER <- 0; Bonf.total.Pow <- 0
+  Sidak.adjp <- matrix(0,B,M[l]); Sidak.R <- matrix(0,B,1); Sidak.V <- matrix(0,B,1)
+  Sidak.total.FWER <- 0; Sidak.total.Pow <- 0
+  Tarone.adjp <- matrix(0,B,M[l]); Tarone.R <- matrix(0,B,1); Tarone.V <- matrix(0,B,1)
+  Tarone.total.FWER <- 0; Tarone.total.Pow <- 0;   # for SE calculation Tarone.total.FWER.2 <- 0; Tarone.total.Pow.2 <- 0
+
+
+  for (i in 1:B){
+  theta1 <- rep(0.1,M[l]) ;  
+  theta2 <- c(rep(0.1,h0),rep(0.3,h1)) 
+   X1 <- rbinom(M[l],N[a],theta1); X2 <- rbinom(M[l],N[a],theta2)
+    P.list[[i]] <- list(NaN *seq(M[l]))
+    for (j in 1:M[l]){
+    P.list[[i]][[j]] <- hyperpval(N[a],N[a],X1[j]+X2[j])
+    Pval[i,j] <- P.list[[i]][[j]][X1[j]+1]
+    }    
+    #### Using Modified Bonferroni Procedure (Proc 1)
+    MBonf.adjp[i,] <- MBonf.p.adjust(Pval[i,], P.list[[i]])
+    
+    MBonf.R[i] <- sum(MBonf.adjp[i,] <= alpha)
+    MBonf.V[i] <- sum(MBonf.adjp[i,1:h0] <= alpha)
+    
+    
+    MBonf.total.FWER <- MBonf.total.FWER + ifelse(MBonf.V[i]>0,1,0)
+    MBonf.total.Pow <- MBonf.total.Pow +ifelse((MBonf.R[i]-MBonf.V[i])>0,1,0)
+    
+    ####Compare with the original Bonferroni procedure
+    Bonf.adjp[i,] <- p.adjust(Pval[i,], method = "bonferroni")
+    Bonf.R[i] <- sum(Bonf.adjp[i,] <= alpha)
+    Bonf.V[i] <- sum(Bonf.adjp[i,1:h0] <= alpha)
+    
+    Bonf.total.FWER <- Bonf.total.FWER + ifelse(Bonf.V[i]>0,1,0)
+    Bonf.total.Pow <- Bonf.total.Pow +ifelse((Bonf.R[i]-Bonf.V[i])>0,1,0)
+    
+    
+    #### Compare with the Sidak procedure
+    Sidak.adjp[i,] <- Sidak.p.adjust(Pval[i,])
+    Sidak.R[i] <- sum(Sidak.adjp[i,] <= alpha)
+    Sidak.V[i] <- sum(Sidak.adjp[i,1:h0] <= alpha)
+    
+    Sidak.total.FWER <- Sidak.total.FWER + ifelse(Sidak.V[i]>0,1,0)
+    Sidak.total.Pow <- Sidak.total.Pow +ifelse((Sidak.R[i]-Sidak.V[i])>0,1,0)
+    
+    ####Compare with the Modified Tarone procedure
+    Tarone.adjp[i,] <- Tarone.p.adjust(Pval[i,], P.list[[i]])
+    Tarone.R[i] <- sum(Tarone.adjp[i,] <= alpha)
+    Tarone.V[i] <- sum(Tarone.adjp[i,1:h0] <= alpha)
+    
+    Tarone.total.FWER <- Tarone.total.FWER + ifelse(Tarone.V[i]>0,1,0)
+    Tarone.total.Pow <- Tarone.total.Pow +ifelse((Tarone.R[i]-Tarone.V[i])>0,1,0)
+
+    
+  } 
+  
+  MBonf.FWER[a] <- MBonf.total.FWER/B; MBonf.Pow[a] <- MBonf.total.Pow/B
+  Bonf.FWER[a] <- Bonf.total.FWER/B; Bonf.Pow[a] <- Bonf.total.Pow/B
+  Sidak.FWER[a] <- Sidak.total.FWER/B; Sidak.Pow[a] <- Sidak.total.Pow/B
+  Tarone.FWER[a] <- Tarone.total.FWER/B; Tarone.Pow[a] <- Tarone.total.Pow/B
+ } 
+  
+    MBonf.FWER.pi0 <- append(MBonf.FWER.pi0, MBonf.FWER)
+    Bonf.FWER.pi0 <- append(Bonf.FWER.pi0, Bonf.FWER)
+    Tarone.FWER.pi0 <- append(Tarone.FWER.pi0, Tarone.FWER)
+    Sidak.FWER.pi0 <- append(Sidak.FWER.pi0, Sidak.FWER)
+    MBonf.Pow.pi0 <- append(MBonf.Pow.pi0, MBonf.Pow)
+    Bonf.Pow.pi0 <- append(Bonf.Pow.pi0, Bonf.Pow)
+    Tarone.Pow.pi0 <- append(Tarone.Pow.pi0, Tarone.Pow)
+    Sidak.Pow.pi0 <- append(Sidak.Pow.pi0, Sidak.Pow)  
+  
+  }
+}
+outcome <- data.frame(cbind(No=c(1:72), M=rep(M,each=24), pi0=rep(rep(pi0, each=6),3), N=rep(N,12),
+                            MBonf.FWER=MBonf.FWER.pi0,
+                            Tarone.FWER=Tarone.FWER.pi0, 
+                            Sidak.FWER=Sidak.FWER.pi0,
+                            Bonf.FWER=Bonf.FWER.pi0,
+                            MBonf.Pow=MBonf.Pow.pi0,
+                            Tarone.Pow=Tarone.Pow.pi0, 
+                            Sidak.Pow=Sidak.Pow.pi0,
+                            Bonf.Pow=Bonf.Pow.pi0))
+## Plotting Simulated FWER
+FWER <- melt(outcome[,2:8],id.vars = c( "M", "pi0","N"), variable.name = "Methods",value.name = "level")
+FWER$M <- factor(FWER$M,levels=M,
+                 labels=c("M=5","M=10", "M=15")) 
+
+FWER$pi0 <- factor(FWER$pi0,levels=pi0,labels = c("pi0=0.2", "pi0=0.4", "pi0=0.6","pi0=0.8"))
+FWER$Methods <- factor(FWER$Methods,levels=c("MBonf.FWER","Tarone.FWER","Sidak.FWER","Bonf.FWER"),
+                       labels=c("MBonf","Tarone","Sidak","Bonferroni")) 
+
+
+
+qplot(N, level, data=FWER, shape=Methods, color=Methods, facets=M~pi0, # geom = "line", #main = "FWER Comparisons for Step-up Procedures",
+      xlab="N", ylab="Simulated FWER")+
+  theme_bw() +
+  geom_line(aes(linetype=Methods,color=Methods))+
+  theme(legend.position="top")
+
+## Plotting Simulated Power
+Pow <- melt(outcome[,c(2:4,9:12)],id.vars = c( "M", "pi0","N"), variable.name = "Methods",value.name = "level")
+Pow$M <- factor(Pow$M,levels=M,
+                labels=c("M=5","M=10","M=15")) 
+
+Pow$pi0 <- factor(Pow$pi0,levels=pi0,labels = c("pi0=0.2", "pi0=0.4", "pi0=0.6","pi0=0.8"))
+Pow$Methods <- factor(Pow$Methods,levels=c("MBonf.Pow","Tarone.Pow","Sidak.Pow","Bonf.Pow"),
+                      labels=c("MBonf","Tarone","Sidak","Bonferroni")) 
+
+
+
+qplot(N, level, data=Pow, shape=Methods, color=Methods, facets=M~pi0, # geom = "line", #main = "Average Power Comparisons for Step-up Procedures",
+      xlab="N", ylab="Simulated Minimal Power") +
+  theme_bw() +
+  geom_line(aes(linetype=Methods,color=Methods))+
+  theme(legend.position="top")
+```
+
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
 - Never uses retina figures
