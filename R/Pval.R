@@ -43,23 +43,36 @@ getPval <- function(raw.data, test.type = c("FET", "BET"), alternative = c("two.
   else{
    test.type <- match.arg(test.type)
    alternative <- match.arg(alternative)
-    p <- c(); p.set <- list()
+   len <- nrow(raw.data)
+   p <- numeric(len)
+   p.set <- vector("list", len)
   if (test.type=="FET"){
-    for (i in 1:nrow(raw.data)){
-      p[i] <- stats::fisher.test(matrix(c(raw.data[i,1],raw.data[i,2]-raw.data[i,1],raw.data[i,3],raw.data[i,4]-raw.data[i,3]),2,2))[[1]]
-      s<-c()
-      for (j in 0:(raw.data[i,1]+ raw.data[i,3])){
-      s[j+1] <- stats::fisher.test(matrix(c(j,raw.data[i,2]-j,raw.data[i,1]+raw.data[i,3]-j,raw.data[i,4]-(raw.data[i,1]+raw.data[i,3]-j)),2,2), alternative = alternative)[[1]]
+    ssum <- raw.data[,1]+raw.data[,3]
+    slim <- pmin(ssum, raw.data[,2])
+
+    for (i in 1:len){
+      p[i] <- stats::fisher.test(matrix(c(raw.data[i,1],
+                                          raw.data[i,2]-raw.data[i,1],
+                                          raw.data[i,3],
+                                          raw.data[i,4]-raw.data[i,3]),2,2),
+                                 alternative = alternative)[[1]]
+      s<-numeric(slim[i] + 1)
+      for (j in 0:slim[i]){
+      s[j+1] <- stats::fisher.test(matrix(c(j,
+                                            raw.data[i,2]-j,
+                                            ssum[i]-j,
+                                            raw.data[i,4]-(ssum[i]-j)),2,2), alternative = alternative)[[1]]
     }
     p.set[[i]] <- sort(s)
   }
  }
  if (test.type=="BET"){
-   for (i in 1:nrow(raw.data)){
+   ssum <- raw.data[,1]+raw.data[,2]
+   for (i in 1:len){
      p[i] <- stats::binom.test(c(raw.data[i,1],raw.data[i,2]), p = 0.5, alternative = alternative)[[3]]
-     s<-c()
-     for (j in 0:(raw.data[i,1]+ raw.data[i,2])){
-       s[j+1] <- stats::binom.test(c(j, raw.data[i,1]+raw.data[i,2]-j), p = 0.5, alternative = alternative)[[3]]
+     s <- numeric(ssum[i] + 1)
+     for (j in 0:ssum[i]){
+       s[j+1] <- stats::binom.test(c(j, ssum[i]-j), p = 0.5, alternative = alternative)[[3]]
      }
      p.set[[i]] <- sort(s)
    }
