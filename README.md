@@ -3,7 +3,7 @@
 
 ## Multiple Hypotheses Testing for Discrete Data
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/MHTdiscrete)](http://cran.r-project.org/package=MHTdiscrete) [![](http://cranlogs.r-pkg.org/badges/grand-total/MHTdiscrete?color=blue)](https://cran.r-project.org/package=MHTdiscrete) [![](https://img.shields.io/badge/lifecycle-stable-freshgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+[![](https://www.r-pkg.org/badges/version/MHTdiscrete?color=orange)](https://cran.r-project.org/package=MHTdiscrete) [![](http://cranlogs.r-pkg.org/badges/grand-total/MHTdiscrete?color=blue)](https://cran.r-project.org/package=MHTdiscrete) [![](https://img.shields.io/badge/lifecycle-stable-freshgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
 Overview
 --------
