@@ -46,7 +46,7 @@ getPval <- function(raw.data, test.type = c("FET", "BET"), alternative = c("two.
     p <- c(); p.set <- list()
   if (test.type=="FET"){
     for (i in 1:nrow(raw.data)){
-      p[i] <- stats::fisher.test(matrix(c(raw.data[i,1],raw.data[i,2]-raw.data[i,1],raw.data[i,3],raw.data[i,4]-raw.data[i,3]),2,2))[[1]]
+      p[i] <- stats::fisher.test(matrix(c(raw.data[i,1],raw.data[i,2]-raw.data[i,1],raw.data[i,3],raw.data[i,4]-raw.data[i,3]),2,2), alternative = alternative)[[1]]
       s<-c()
       for (j in 0:(raw.data[i,1]+ raw.data[i,3])){
       s[j+1] <- stats::fisher.test(matrix(c(j,raw.data[i,2]-j,raw.data[i,1]+raw.data[i,3]-j,raw.data[i,4]-(raw.data[i,1]+raw.data[i,3]-j)),2,2), alternative = alternative)[[1]]
